@@ -109,5 +109,56 @@ systemctl restart vsftpd
 
 ## TLS
 <pre>sudo a2enmod ssl
-sudo service apache2 restart
-sudo nano /etc/apache2/ports.conf</pre>
+sudo service apache2 restart</pre>  
+
+**[/etc/apache2/ports.conf]**
+auf folgendes überprüfen
+ ```   
+<IfModule ssl_module>  
+ 	Listen 443  
+</IfModule>
+```
+  
+Config neu einlesen:
+<pre>sudo service apache2 reload</pre>
+  
+  
+**openssl installieren**
+<pre>sudo apt install openssl
+cd /etc/ssl</pre>
+
+**Privaten Schlüssel und Certifacte Signing Request generieren**
+<pre>openssl genrsa -out www.gibbix.dmz.key 4096
+openssl req -new -sha256 -key www.gibbix.dmz.key -out www.gibbix.dmz.csr
+	CountryName: CH
+	State: BE
+	LocalityName: Bern
+	OrganizationName: gibbix
+	OrganizationalUnit: M300
+	CommonName: www.gibbix.dmz	(muss mit domain übereinstimmen!)</pre>
+
+**Zertifikat ausstellen**
+<pre>openssl x509 -req -days 365 -in www.gibbix.dmz.csr -signkey www.gibbix.dmz.key -out www.gibbix.dmz.crt -sha256</pre>
+
+Entweder bei **/etc/apache2/sites-available/www.gibbix.dmz.conf** folgende Zeilen hinzufügen:
+<pre>	SSLEngine on
+	SSLCertificateFile /etc/ssl/www.gibbix.dmz.crt
+	SSLCertificateKeyFile /etc/ssl/www.gibbix.dmz.key</pre>
+  
+ Oder eine weitere Datei erstellen:
+ <pre>sudo nano /etc/apache2/sites-available/ssl.conf</pre>
+```
+sudo nano /etc/apache2/sites-available/ssl.conf
+<VirtualHost *:443>
+	SSLEngine on
+	SSLCertificateFile /etc/ssl/www.gibbix.dmz.crt
+	SSLCertificateKeyFile /etc/ssl/www.gibbix.dmz.key
+	DocumentRoot /www/
+</VirtualHost>
+```
+
+zum Schluss:
+<pre>sudo a2ensite ssl.conf
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+</pre>
