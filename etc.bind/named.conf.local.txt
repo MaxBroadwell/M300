@@ -1,0 +1,22 @@
+root@vmLS3:/etc/ssl# cat /etc/bind/named.conf.local 
+//
+// Do any local configuration here
+//
+zone "gibbix.lan" {
+    type master;
+    file "/etc/bind/db.gibbix.lan"; # zone file path
+};
+zone "gibbix.dmz" {
+    type master;
+    file "/etc/bind/db.gibbix.dmz"; # zone file path
+};
+
+zone "220.168.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.220.168.192";
+};
+
+zone "210.168.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.210.168.192";
+};

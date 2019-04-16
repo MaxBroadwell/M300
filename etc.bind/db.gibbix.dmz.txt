@@ -1,0 +1,20 @@
+root@vmLS3:/etc/ssl# cat /etc/bind/db.gibbix.dmz 
+; db.gibbix.dmz
+; Forwardlookupzone für gibbix.dmz
+
+$TTL	3600
+@	IN	SOA	vmls3.gibbix.dmz.	root.gibbix.dmz. (
+			2
+			1H
+			2H
+			1D
+			1H )
+
+@	IN	NS	vmls3.gibbix.dmz.
+@	IN	A	192.168.220.12
+vmlf1	IN	A	192.168.220.1
+vmls3	IN	A	192.168.220.12
+vmlp1	IN	A	192.168.210.30
+www	IN	CNAME	vmls3
+ns	IN	CNAME	vmls3
+ftp	IN	CNAME	vmls3

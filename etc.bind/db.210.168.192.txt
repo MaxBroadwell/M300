@@ -1,0 +1,14 @@
+root@vmLS3:/etc/ssl# cat /etc/bind/db.210.168.192 
+; db.210.168.192
+; Reverselookupzone für 192.168.210 (gibbix.lan)
+$TTL	3600
+@	IN	SOA	vmls3.gibbix.lan.	root.gibbix. (
+			1
+			1H
+			2H
+			1D
+			1H )
+
+@	IN	NS	vmls3.gibbix.lan.
+1	IN	PTR	vmlf1.gibbix.lan.
+12	IN	PTR	vmls3.gibbix.lan.

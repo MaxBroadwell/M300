@@ -1,0 +1,18 @@
+root@vmLS3:/etc/ssl# cat /etc/apache2/sites-available/www.gibbix.dmz.conf 
+<VirtualHost *:443>
+	ServerName gibbix.dmz
+	ServerAlias www.gibbix.dmz
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /www/www.gibbix.dmz/
+	ErrorDocument 404 /err/404.html
+
+	<Directory /www/www.gibbix.dmz>
+		Require all granted
+		Options -Indexes
+	</Directory>	
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+

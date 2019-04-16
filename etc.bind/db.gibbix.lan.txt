@@ -1,0 +1,21 @@
+ftp	IN	CNAME	vmls3
+root@vmLS3:/etc/ssl# cat /etc/bind/db.gibbix.lan 
+; db.gibbix.lan
+; Forwardlookupzone für gibbix.lan
+
+$TTL	3600
+@	IN	SOA	vmls5.gibbix.lan.	root.gibbix.lan. (
+			3
+			1H
+			2H
+			1D
+			1H )
+
+@	IN	NS	vmls5.gibbix.lan.
+vmlf1	IN	A	192.168.220.1
+vmls3	IN	A	192.168.220.12
+vmlp1	IN	A	192.168.210.30
+vmls5	IN	A	192.168.210.61
+www	IN	CNAME	vmls5
+ku1	IN	CNAME	vmls5
+ku2	IN	CNAME	vmls5

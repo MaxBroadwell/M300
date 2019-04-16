@@ -1,0 +1,153 @@
+
+[Main Config Files]
+nano /etc/apache2/sites-available/domainfile.conf
+nano /etc/bind/named.conf.local
+nano /etc/bind/db.zonefile
+
+
+/etc/network/interfaces
+
+
+[sftp put directory recursive]
+put -r file
+
+
+[partition mounten]
+lshw -class disk
+fdisk /dev/sdb
+	n (new partition)
+	p (primary)
+	1 (partition number)
+	First & Last cylinder default
+	w (write)
+mkfs.ext4 /dev/sdb1
+mkdir /www	(mount point)
+nano /etc/fstab
+mount -a
+
+----------------------------
+
+apt update
+apt upgrade
+
+
+
+
+
+###### Bind installieren ######
+apt install bind9
+
+sudo /etc/bind/named.conf.options
+	{changes}
+
+
+sudo nano /etc/bind/named.conf.local
+sudo nano /etc/bind/db.gibbix.dmz
+sudo nano /etc/bind/db.220.168.192
+sudo nano /etc/bind/db.gibbix.lan
+sudo nano /etc/bind/db.210.168.192
+
+
+
+
+###### apache installieren ######
+apt install apache2
+apache2ctl configtest
+
+[Berechtigungen]
+sudo addgroup wwwadmin
+sudo usermod -aG wwwadmin vmadmin
+sudo usermod -aG wwwadmin www-data
+
+sudo chown -R vmadmin:wwwadmin /www
+sudo chmod -R 775 /www
+
+
+root@vmLS5:~# cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/gibbix.lan.conf
+root@vmLS5:~# nano /etc/apache2/sites-available/gibbix.lan.conf
+
+a2dissite 000-default
+a2ensite gibbix.lan
+
+systemctl reload apache2
+
+
+
+[Apache2 Errorlogs]
+systemctl status apache2
+cat /var/log/apache2/error.log
+
+
+
+###### ProFTPd ######
+sudo apt install proftpd	-> STANDALONE
+VERALTET
+
+stattdessen:
+sudo apt install vsftp
+
+sudo adduser ftpuser --home /www/ --shell /bin/false
+	/bin/false in /etc/shells eintragen
+sudo nano /etc/vsftpd.conf
+	chroot_local_user=YES	-> User in Homeverzeichnis einsperren
+	userlist_deny=NO
+	userlist_enable=YES
+	userlist_file=/etc/vsftpd.user_list
+
+sudo nano /etc/vsftp.user_list
+	ftpuser ->eintragen
+
+systemctl restart vsftpd
+
+
+
+
+###### TLS ######
+Extended Validation Preis, Anbieter?
+Unterschiede zu Lets Encyrpt und Co. & Andere Zertifikats-Typen
+
+(Arbeitsplanung für SSL-Zertifikate erstellen?)
+
+
+apache2
+sudo a2enmod ssl
+sudo service apache2 restart
+sudo nano /etc/apache2/ports.conf
+	<IfModule ssl_module>
+    		Listen 443
+	</IfModule>
+sudo sevice apache2 reload	-> Config neu einlesen
+
+
+sudo apt install openssl
+cd /etc/ssl
+openssl genrsa -out www.gibbix.dmz.key 4096					-> (privaten)Schlüssel generieren
+openssl req -new -sha256 -key www.gibbix.dmz.key -out www.gibbix.dmz.csr	-> Certificate Signing Request
+	CountryName: CH
+	State: BE
+	LocalityName: Bern
+	OrganizationName: gibbix
+	OrganizationalUnit: M300
+	CommonName: www.gibbix.dmz	(muss mit domain übereinstimmen!)
+
+
+openssl x509 -req -days 365 -in www.gibbix.dmz.csr -signkey www.gibbix.dmz.key -out www.gibbix.dmz.crt -sha256
+
+Entweder bei /etc/apache2/sites-available/www.gibbix.dmz.conf folgende Zeilen hinzufügen:
+	SSLEngine on
+	SSLCertificateFile /etc/ssl/www.gibbix.dmz.crt
+	SSLCertificateKeyFile /etc/ssl/www.gibbix.dmz.key
+
+++Oder 
+sudo nano /etc/apache2/sites-available/ssl.conf
+	<VirtualHost *:443>
+		SSLEngine on
+		SSLCertificateFile /etc/ssl/www.gibbix.dmz.crt
+		SSLCertificateKeyFile /etc/ssl/www.gibbix.dmz.key
+  		DocumentRoot /www/
+	</VirtualHost>
+
+sudo a2ensite ssl.conf
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+

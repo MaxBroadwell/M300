@@ -1,0 +1,8 @@
+root@vmLS3:/etc/ssl# cat /etc/apache2/sites-available/ssl.conf 
+<VirtualHost *:443>
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/www.gibbix.dmz.crt
+    SSLCertificateKeyFile /etc/ssl/www.gibbix.dmz.key
+    
+    DocumentRoot /www/
+</VirtualHost>

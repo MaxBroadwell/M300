@@ -1,0 +1,54 @@
+root@vmLS5:/etc/ssl# cat /etc/apache2/sites-available/gibbix.lan.conf 
+Listen 80
+Listen 443
+
+<VirtualHost *:443>
+	ServerName gibbix.lan
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /www/www.gibbix.lan/
+        ErrorDocument 404 /err/404.html
+	SSLEngine on
+	SSLCertificateFile /etc/ssl/www.gibbix.lan.crt
+	SSLCertificateKeyFile /etc/ssl/www.gibbix.lan.key
+	<Directory /www/www.gibbix.lan>
+		Require all granted
+		Options -Indexes
+	</Directory>	
+	
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+<VirtualHost *:80>
+        ServerName ku1.gibbix.lan
+
+        DocumentRoot /www/ku1.gibbix.lan/
+	ErrorDocument 404 /err/404.html
+	<Directory /www/ku1.gibbix.lan>
+                Require all granted
+                Options -Indexes
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName ku2.gibbix.lan
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /www/ku2.gibbix.lan/
+	ErrorDocument 404 /err/404.html
+
+	<Directory /www/ku2.gibbix.lan>
+		Require all granted
+		Options -Indexes
+	</Directory>	
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
