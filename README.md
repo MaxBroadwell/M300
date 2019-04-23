@@ -44,13 +44,13 @@ sudo nano /etc/bind/db.210.168.192
 
 
 ## Apache
-**Konfigs neu einlesen**
+**Konfigs neu einlesen:**  
 systemctl reload apache2  
-**Apache neustarten**
+**Apache neustarten:**  
 systemctl restart apache2  
-**Apache satus und Errors**
+**Apache satus und Errors:**  
 systemctl status apache2  
-cat /var/log/apache2/error.log  
+cat /var/log/apache2/error.log    
 
 1. Apache installation
 <pre>sudo apt install apache2</pre>
@@ -61,26 +61,22 @@ sudo usermod -aG wwwadmin vmadmin
 sudo usermod -aG wwwadmin www-data
 
 sudo chown -R vmadmin:wwwadmin /www
-sudo chmod -R 775 /www</pre>
+sudo chmod -R 755 /www</pre>
 
 
 ### Configfiles
 <pre><b>root@vmLS5:~#</b> cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/gibbix.lan.conf
 <b>root@vmLS5:~#</b> nano /etc/apache2/sites-available/gibbix.lan.conf</pre>
 
-Weitere Configfiles
-<pre></pre>
 
 **Default-Site deaktivieren & erstellte Site aktivieren**
-a2dissite 000-default
-a2ensite gibbix.lan
+<pre>a2dissite 000-default
+a2ensite gibbix.lan</pre>
 
 
 
 ### Virtuelle Hosts
-some text
 
-<pre></pre>
 
 
 
@@ -92,8 +88,9 @@ some text
 ### Konfiguration
 **Create FTP-User**
 <pre>sudo adduser ftpuser --home /www/ --shell /bin/false</pre>
-**/bin/false** in **/etc/shells** eintragen  
 
+**/bin/false** in **/etc/shells** eintragen  
+  
 **[/etc/vsftpd.conf]**
 folgende Änderungen:  
 <pre>	chroot_local_user=YES	-> User in Homeverzeichnis einsperren
@@ -101,7 +98,7 @@ folgende Änderungen:
 	userlist_enable=YES
 	userlist_file=/etc/vsftpd.user_list</pre>
  
-**[/etc/vsftpd.user_list]**
+**[/etc/vsftpd.user_list]**  
 Datei vsftpd.user_list erstellen und **ftpuser** eintragen
  
 systemctl restart vsftpd  
@@ -110,7 +107,7 @@ systemctl restart vsftpd
 ## TLS
 <pre>sudo a2enmod ssl
 sudo service apache2 restart</pre>  
-
+  
 **[/etc/apache2/ports.conf]**
 auf folgendes überprüfen
  ```   
